@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Work Day Scheduler</title>
+</head>
+
+<body>
+  <header class="jumbotron">
+    <h1 class="display-3">Work Day Scheduler</h1>
+    <p class="lead">A simple calendar app for scheduling your work day</p>
+    <p id="currentDay" class="lead"></p>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  </header>
+  <div class="container">
+    <!-- Timeblocks go here -->
+  </div>
+  <form class="col-sm-7" id="planner-box">
+
+  </form>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+  <script>
+    //gives the current hour of the day useful for coloring the boxes according to time 
+    moment().hour()
+
+    $(document).ready(function () {
+      // sets current day in html
+
+      $("#currentDay").text(moment().format("dddd, MMMM Do"))
+      // creates the html for the dayplanner dynamically
+      for (let i = 9; i <= 17; i++) {
+        if (i < 12) {
+          $plannerBlock = $(`
+          <section class="planner-block" value =${i}>
+          <time class="col-sm-2">${i}:00 AM</time>
+          <input class="form-control form-control-lg col-sm-8" type="text">
+          <button type="submit" class="btn btn-info"><i class="fas fa-save"></i></button>
+          </section>
+          `)
+        }
+        else if (i === 12) {
+          $plannerBlock = $(`
+          <section class="planner-block" value =${i}>
+          <time class="col-sm-2">${i}:00 PM</time>
+          <input class="form-control form-control-lg col-sm-8" type="text">
+          <button type="submit" class="btn btn-info"><i class="fas fa-save"></i></button>
+          </section>
+          `)
+        }
+        else {
+          $plannerBlock = $(`
+          <section class="planner-block" value =${i}>
+          <time class="col-sm-2">${i - 12}:00 PM</time>
+          <input class="form-control form-control-lg col-sm-8" type="text">
+          <button type="submit" class="btn btn-info"><i class="fas fa-save"></i></button>
+          </section>
+          `)
+        }
+        $plannerBlock.appendTo("#planner-box")
+      }
+
+      // adding color to each box in day planner
+      // placing text from localstorage if it exists
+      var $plannerChildren = $(".planner-block")
+      for (let i = 0; i <= 8; i++) {
+        var $thisChild = $plannerChildren[i]
+        if (localStorage.getItem($($thisChild).attr('value'))) {
+          $($thisChild.children[1]).val(localStorage.getItem($($thisChild).attr('value')))
+        }
+
+
+        // adds color to each element
+        if (moment().hour() > $($thisChild).attr('value')) {
+          $($thisChild.children[1]).addClass("past")
+        }
+        else if (moment().hour() == $($thisChild).attr('value')) {
+          $($thisChild.children[1]).addClass("present")
+        }
+        else {
+          $($thisChild.children[1]).addClass("future")
+        }
+      }
+    })
+
+    // save button listener 
+    $(document).on("click", ".btn-info", function (event) {
+      event.preventDefault();
+      // input field in this block
+      var $thisInput = $(this).siblings()[1];
+      // time related to this block
+      var $thisTimeVal = $($(this).parent()).attr('value')
+      localStorage.setItem($thisTimeVal, $($thisInput).val());
+
+
+    })
+
+  </script>
+</body>
+
+</html>
+<!-- json.stringify json.parse for local storage     -->

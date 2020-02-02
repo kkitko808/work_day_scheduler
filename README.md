@@ -1,1 +1,3 @@
 # work_day_scheduler
+
+This is a basic work day scheduler that allows the user to input tasks or things they want to do at a given time in the day from 9 AM to 5 PM. It uses moment js to display the current month and day and also to change the color of the text fields depending on if the hours shown on the planner are in the past, present or future in relation to the current hour in the day. It utilizes local storage as well as event listeners.
